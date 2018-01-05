@@ -1,4 +1,5 @@
 A slack bot that checks to see if you performed a daily commit in the github repository.
+
 I tested it on Ubuntu 14.04.
 
 ## Install python package
