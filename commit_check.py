@@ -7,7 +7,12 @@ import pytz
 import os
 
 local_tz = pytz.timezone('Asia/Seoul')
-token = 'API token for your bot'
+
+token = ""
+try:
+	token = os.environ['SLACK_BOOT_TOKEN']
+except Exception as err:
+	print ("[Error] %s" % (str(err)))
 
 slack = Slacker(token)
 channels = ['#dailycommit']
