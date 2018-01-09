@@ -74,7 +74,6 @@ class SlackPost(threading.Thread):
 
             last_commit = self.get_repo_last_commit_delta_time(owner, repo)
             delta_time = self.get_delta_time(last_commit)
-            delta_time = 0
 
             if(delta_time == 0):
                 reports.append("%s/%s commited today." % (owner, repo))
