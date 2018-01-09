@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/python
 from slacker import Slacker
+from datetime import datetime
 import github3
-import datetime
 import pytz
 import os
 
@@ -28,7 +28,7 @@ def get_repo_last_commit_delta_time(owner, repo):
 
 
 def get_delta_time(last_commit):
-    now = datetime.datetime.now(local_tz)
+    now = datetime.now(local_tz)
     delta = now - last_commit
     return delta.days
 
