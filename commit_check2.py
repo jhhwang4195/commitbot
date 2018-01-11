@@ -18,7 +18,7 @@ def signal_handler(signal, frame):
 
 
 class SlackPost(threading.Thread):
-    def __init__(self, token=None, channels=None, group=None, target=None, name=None,
+    def __init__(self, token=None, channels=None, repos=None, group=None, target=None, name=None,
                  args=(), kwargs=None, verbose=None):
         threading.Thread.__init__(self, group=group, target=target, name=name,
                                   verbose=verbose)
@@ -26,6 +26,7 @@ class SlackPost(threading.Thread):
         self.local_tz = pytz.timezone('Asia/Seoul')
         self.slack = Slacker(token)
         self.channels = channels
+        self.repos = repos
         self.signal = True
         return
 
@@ -34,7 +35,7 @@ class SlackPost(threading.Thread):
             time.sleep(1)
             now = datetime.now()
             if now.minute == 0 and now.second == 0:
-                self.send_slack_message()
+                self.send_slack_message(self.repos)
 
     def post_to_channel(self, message):
         self.slack.chat.post_message(self.channels[0], message)
@@ -48,21 +49,12 @@ class SlackPost(threading.Thread):
         delta = now - last_commit
         return delta.days
 
-    def send_slack_message(self):
-        members = (
-            ('jhhwang4195', '', ''),
-            ('jhhwang4195', 'TIL', 'jhhwang'),
-            ('jhhwang4195', 'my_source', 'jhhwang'),
-            ('jhhwang4195', 'my_config', 'jhhwang'),
-            ('jhhwang4195', 'slackbot', 'jhhwang'),
-            ('jhhwang4195', 'commitbot', 'jhhwang'),
-            ('hwauni', '', ''),
-            ('hwauni', 'MachineLearning', 'sylee'),
-        )
+    def send_slack_message(self, repos):
+
         old_name = ""
         reports = []
 
-        for owner, repo, name in members:
+        for owner, repo, name in repos:
             if old_name != "" and old_name != name:
                 reports.append("```")
 
@@ -104,8 +96,20 @@ if __name__ == '__main__':
     except Exception as err:
         print ("[Error] %s" % (str(err)))
 
+    # set repository
+    repos = (
+        ('jhhwang4195', '', ''),
+        ('jhhwang4195', 'TIL', 'jhhwang'),
+        ('jhhwang4195', 'my_source', 'jhhwang'),
+        ('jhhwang4195', 'my_config', 'jhhwang'),
+        ('jhhwang4195', 'slackbot', 'jhhwang'),
+        ('jhhwang4195', 'commitbot', 'jhhwang'),
+        ('hwauni', '', ''),
+        ('hwauni', 'MachineLearning', 'sylee'),
+    )
+
     # start thread
-    t = SlackPost(name="slack_post", token=token, channels=['#dailycommit'])
+    t = SlackPost(name="slack_post", token=token, channels=['#dailycommit'], repos=repos)
     t.start()
 
     while True:
