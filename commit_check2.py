@@ -46,11 +46,12 @@ class SlackPost(threading.Thread):
 
     def get_delta_time(self, last_commit):
         now = datetime.now(self.local_tz)
-        delta = now - last_commit
+        last_push_date = datetime(last_commit.year, last_commit.month, last_commit.day)
+        cur_date = datetime(now.year, now.month, now.day)
+        delta = cur_date - last_push_date
         return delta.days
 
     def send_slack_message(self, repos):
-
         old_name = ""
         reports = []
 
