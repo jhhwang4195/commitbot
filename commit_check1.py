@@ -29,7 +29,9 @@ def get_repo_last_commit_delta_time(owner, repo):
 
 def get_delta_time(last_commit):
     now = datetime.now(local_tz)
-    delta = now - last_commit
+    last_push_date = datetime(last_commit.year, last_commit.month, last_commit.day)
+    cur_date = datetime(now.year, now.month, now.day)
+    delta = cur_date - last_push_date
     return delta.days
 
 
@@ -49,6 +51,7 @@ def main():
         else:
             reports.append('*%s* has not committed for *%s* days.' % (name, delta_time))
 
+    print('\n A bot that checks daily commits.\n' + '\n'.join(reports))
     post_to_channel('\n A bot that checks daily commits.\n' + '\n'.join(reports))
 
 
